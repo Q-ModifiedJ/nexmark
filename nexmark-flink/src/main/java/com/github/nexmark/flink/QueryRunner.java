@@ -79,9 +79,12 @@ public class QueryRunner {
 				System.out.println("Stop the warmup, cost " + waited + "ms.");
 				LOG.info("Stop the warmup, cost " + waited + ".");
 			}
+			//record job ids before submit this job
+			flinkRestClient.saveAllJobStatus();
+			//submit job
 			runInternal();
 			// blocking until collect enough metrics
-			String jobId = flinkRestClient.getCurrentJobId();
+			String jobId = flinkRestClient.getNewJobId();
 			JobBenchmarkMetric metrics = metricReporter.reportMetric(jobId, workload.getEventsNum());
 			// cancel job
 			System.out.println("Stop job query " + queryName);

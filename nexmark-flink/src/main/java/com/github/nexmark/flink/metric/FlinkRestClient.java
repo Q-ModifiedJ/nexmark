@@ -62,6 +62,9 @@ public class FlinkRestClient {
 	private final String jmEndpoint;
 	private final CloseableHttpClient httpClient;
 	private final Map<String, String> jobIds;
+
+	private final Map<String, String> formerJobIds;
+
 	private volatile String lastJobId;
 
 	public FlinkRestClient(String jmAddress, int jmPort) {
@@ -83,6 +86,7 @@ public class FlinkRestClient {
 			.build();
 
 		this.jobIds = new ConcurrentHashMap<>(50);
+		this.formerJobIds = new ConcurrentHashMap<>(50);
 		this.lastJobId = "";
 	}
 
@@ -112,6 +116,32 @@ public class FlinkRestClient {
 	public String getCurrentJobId() {
 		updateAllJobStatus();
 		return lastJobId;
+	}
+
+	public String getNewJobId(){
+		updateAllJobStatus();
+		String newJobId = "";
+		for(String jobId : jobIds.keySet()){
+			if(formerJobIds.get(jobId)==null){
+				newJobId = jobId;
+			}
+		}
+		return newJobId;
+	}
+
+	public synchronized void saveAllJobStatus(){
+		String url = String.format("http://%s/jobs", jmEndpoint);
+		String response = executeAsString(url);
+		try {
+			JsonNode jsonNode = NexmarkUtils.MAPPER.readTree(response);
+			JsonNode jobs = jsonNode.get("jobs");
+			for (JsonNode job : jobs) {
+				String id = job.get("id").asText();
+				formerJobIds.put(id, job.get("status").asText());
+			}
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("The response is not a valid JSON string:\n" + response, e);
+		}
 	}
 
 	public boolean isJobRunning() {

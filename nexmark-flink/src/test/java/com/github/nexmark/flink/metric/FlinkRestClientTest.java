@@ -49,4 +49,20 @@ public class FlinkRestClientTest {
 		client.cancelJob(jobId);
 	}
 
+	@Test
+	public void testGetNewJobId(){
+		FlinkRestClient client = new FlinkRestClient("10.101.168.97",8081);
+		client.saveAllJobStatus();
+
+		//manually add a new job
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e){
+			e.printStackTrace();
+		}
+		String newJobId = client.getNewJobId();
+		System.out.println("New Job Id:"+newJobId);
+		client.cancelJob(newJobId);
+	}
+
 }
