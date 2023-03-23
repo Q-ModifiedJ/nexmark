@@ -72,4 +72,10 @@ public class FlinkNexmarkOptions {
 		.defaultValue(8081)
 		.withDescription("Flink REST port.");
 
+	public static final ConfigOption<String> NEXMARK_SQL_CONFIG = ConfigOptions
+		.key("sql.config")
+		.stringType()
+		.defaultValue("${FLINK_HOME}/bin/conf/sql-client-defaults.yaml")
+		.withDescription("Specific SQL-Client configuration");
+
 }

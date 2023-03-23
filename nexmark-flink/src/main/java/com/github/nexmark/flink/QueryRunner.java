@@ -22,7 +22,9 @@ import com.github.nexmark.flink.metric.FlinkRestClient;
 import com.github.nexmark.flink.metric.JobBenchmarkMetric;
 import com.github.nexmark.flink.metric.MetricReporter;
 import com.github.nexmark.flink.utils.AutoClosableProcess;
+import com.github.nexmark.flink.utils.NexmarkGlobalConfiguration;
 import com.github.nexmark.flink.workload.Workload;
+import org.apache.flink.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,6 +186,11 @@ public class QueryRunner {
 		final List<String> commands = new ArrayList<>();
 		commands.add(flinkBin.resolve("sql-client.sh").toAbsolutePath().toString());
 		commands.add("embedded");
+
+        // flink/bin/sql-client-sh embedded SQLLine -d sql_config
+		Configuration nexmarkConf = NexmarkGlobalConfiguration.loadConfiguration();
+		String sql_config = nexmarkConf.get(FlinkNexmarkOptions.NEXMARK_SQL_CONFIG);
+		commands.add("-d "+sql_config);
 
 		LOG.info("\n================================================================================"
 				+ "\nQuery {} is running."

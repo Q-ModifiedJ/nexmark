@@ -62,7 +62,6 @@ public class FlinkRestClient {
 	private final String jmEndpoint;
 	private final CloseableHttpClient httpClient;
 	private final Map<String, String> jobIds;
-
 	private final Map<String, String> formerJobIds;
 
 	private volatile String lastJobId;
