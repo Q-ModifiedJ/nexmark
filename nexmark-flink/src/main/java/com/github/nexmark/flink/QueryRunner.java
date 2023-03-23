@@ -187,10 +187,10 @@ public class QueryRunner {
 		commands.add(flinkBin.resolve("sql-client.sh").toAbsolutePath().toString());
 		commands.add("embedded");
 
-        // flink/bin/sql-client-sh embedded SQLLine -d sql_config
+        // flink/bin/sql-client-sh embedded SQLLine -i sql_set_config
 		Configuration nexmarkConf = NexmarkGlobalConfiguration.loadConfiguration();
 		String sql_config = nexmarkConf.get(FlinkNexmarkOptions.NEXMARK_SQL_CONFIG);
-		commands.add("-d "+sql_config);
+		commands.add("-i "+sql_config);
 
 		LOG.info("\n================================================================================"
 				+ "\nQuery {} is running."
